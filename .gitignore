@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+jute+pest+dataset/
+
+myenv/
+
 # C extensions
 *.so
 
