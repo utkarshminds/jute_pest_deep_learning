@@ -24,7 +24,8 @@ def reading_images_train(folder_name):
         if filename.endswith('.jpg'):
             image_path = os.path.join(folder_name, filename)
             img = Image.open(image_path)
-            img_resized = img.resize((640,640), Image.LANCZOS)
+            #original -640,640
+            img_resized = img.resize((64,64), Image.LANCZOS)
             Xtrain.append(img_resized)
             ytrain.append(folder_name)
 
@@ -33,7 +34,7 @@ def reading_images_val(folder_name):
         if filename.endswith('.jpg'):
             image_path = os.path.join(folder_name, filename)
             img = Image.open(image_path)
-            img_resized = img.resize((640,640), Image.LANCZOS)
+            img_resized = img.resize((64,64), Image.LANCZOS)
             Xval.append(img_resized)
             yval.append(folder_name)
 
@@ -42,7 +43,7 @@ def reading_images_test(folder_name):
         if filename.endswith('.jpg'):
             image_path = os.path.join(folder_name, filename)
             img = Image.open(image_path)
-            img_resized = img.resize((640,640), Image.LANCZOS)
+            img_resized = img.resize((64,64), Image.LANCZOS)
             Xtest.append(img_resized)
             ytest.append(folder_name)
 
@@ -84,12 +85,16 @@ ytrain = le.fit_transform(ytrain)
 ytest = le.fit_transform(ytest)
 yval = le.fit_transform(yval)
 
+#normalization - to bring 0 to 1
+Xtrain = Xtrain/255.0
+Xval = Xval/255.0
+Xtest = Xtest/255.0
+
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Flatten, Normalization, Dense, Dropout
 
 juteAnn = Sequential()
 juteAnn.add(Flatten())
-juteAnn.add(Normalization())
 juteAnn.add(Dense(units=128, activation='relu'))
 juteAnn.add(Dense(units=128, activation='relu'))
 juteAnn.add(Dense(units=1, activation='sigmoid'))
@@ -105,7 +110,7 @@ history = juteAnn.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=10, c
 
 from tensorflow.keras.models import load_model
 
-bestmodel = load_model('bestmodel.h5')
+bestmodel = load_model('bestmodel.keras')
 
 bestmodel.evaluate(Xtest, ytest)
 
